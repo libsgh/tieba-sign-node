@@ -25,6 +25,7 @@ func main() {
 	//声明一个路由
 	r.GET("/", info)
 	r.GET("/info", info)
+	r.POST("/tbs", tbs)
 	r.GET("/tbs", tbs)
 	TiebaSign.InitJobs() //初始化定时任务
 	r.Run(":" + port)    // 监听并在 0.0.0.0:8080 上启动服务
