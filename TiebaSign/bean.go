@@ -80,7 +80,7 @@ type ChanSignResult struct {
 	LikedTieba
 }
 type TieBaModel struct {
-	Level string `json:"level"`
+	Level float64 `json:"level"`
 	ChanSignResult
 }
 type BqTieBa struct {
