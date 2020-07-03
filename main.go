@@ -12,7 +12,7 @@ import (
 var version string = "1.3.0"
 
 func main() {
-	gin.SetMode(gin.ReleaseMode)
+	//gin.SetMode(gin.ReleaseMode)
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("必须设置 $PORT")
