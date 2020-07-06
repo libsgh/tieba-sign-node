@@ -152,17 +152,18 @@ func GetLikedTiebas(bduss string, uid string) ([]LikedTieba, error) {
 		var likedApiRep LikedApiRep
 		if err := jsoniter.Unmarshal([]byte(body), &likedApiRep); err != nil {
 			log.Println("err: ", err)
-		}
-		for _, likeTb := range likedApiRep.ForumList.Gconforum {
-			likedTiebaList = append(likedTiebaList, likeTb)
-		}
-		for _, likeTb := range likedApiRep.ForumList.NonGconforum {
-			likedTiebaList = append(likedTiebaList, likeTb)
-		}
-		if likedApiRep.HasMore == "0" {
 			break
-		}
+		} else {
+			for _, likeTb := range likedApiRep.ForumList.Gconforum {
+				likedTiebaList = append(likedTiebaList, likeTb)
+			}
+			for _, likeTb := range likedApiRep.ForumList.NonGconforum {
+				likedTiebaList = append(likedTiebaList, likeTb)
+			}
+			if likedApiRep.HasMore == "0" {
 
+			}
+		}
 	}
 	return likedTiebaList, nil
 }

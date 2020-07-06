@@ -27,7 +27,7 @@ func InitJobs() {
 	c.AddFunc("0 0/1 * * * ?", func() {
 		if signFlag == false {
 			signFlag = true
-			log.Println("扫描待签到贴吧信息，并加入队列...")
+			log.Println("查询待签到贴吧信息，并加入队列...")
 			body := Get("https://toolsbox.herokuapp.com/sign/query?servername=" + serverName)
 			val := []byte(body)
 			var tiebas []Tieba
@@ -50,7 +50,7 @@ func InitJobs() {
 				}
 				OneBtnToSign(tiebas[piece])
 			})
-			log.Println("扫描任务执行完毕")
+			log.Println("签到任务执行完毕")
 			signFlag = false
 		}
 	})
