@@ -45,6 +45,7 @@ func InitJobs() {
 				if !isLogin {
 					postData := make(map[string]interface{})
 					postData["cookie_valid"] = 0
+					postData["sign_status"] = 2
 					Post("https://toolsbox.herokuapp.com/sign/update?flag=1&uid="+tiebas[piece].Uid, postData)
 					log.Println(tiebas[piece].Name + "------BDUSS失效")
 				}
