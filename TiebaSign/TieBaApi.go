@@ -485,7 +485,7 @@ func Strval(value interface{}) string {
 	case []byte:
 		key = string(value.([]byte))
 	default:
-		newValue, _ := json.Marshal(value)
+		newValue, _ := jsoniter.Marshal(value)
 		key = string(newValue)
 	}
 
