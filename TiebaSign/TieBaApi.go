@@ -161,7 +161,7 @@ func GetLikedTiebas(bduss string, uid string) ([]LikedTieba, error) {
 				likedTiebaList = append(likedTiebaList, likeTb)
 			}
 			if likedApiRep.HasMore == "0" {
-
+				break
 			}
 		}
 	}
