@@ -34,10 +34,6 @@ func InitJobs() {
 			if err := jsoniter.Unmarshal(val, &tiebas); err != nil {
 				log.Println("error: ", err)
 			}
-			/*var tiebas []Tieba
-			if err := Db.Where("uid = ?", "858737185").First(&tiebas).Error; err != nil {
-				fmt.Println(err)
-			}*/
 			Parallelize(5, len(tiebas), func(piece int) {
 				//1. 同步签到状态
 				Get("https://toolsbox.herokuapp.com/sign/syncStatus?uid=" + tiebas[piece].Uid)

@@ -274,7 +274,7 @@ func Commitprison(bduss string, tbs string, userName string, tbName string, days
 	portrait string) string {
 	var postData = map[string]interface{}{
 		"BDUSS":           bduss,
-		"_client_type":    2,
+		"_client_type":    "2",
 		"_client_version": "11.2.8.1",
 		"day":             days,
 		"fid":             GetFid(tbName),
@@ -293,7 +293,7 @@ func Commitprison(bduss string, tbs string, userName string, tbName string, days
 		postData["un"] = userName
 	}
 	postData["sign"] = DataSign(postData)
-	body, err := Fetch("http://c.tieba.baidu.com/c/c/bawu/commitprison", postData, bduss, "")
+	body, err := Fetch("http://c.tieba.baidu.com/c/c/bawu/commitprison", postData, "", "")
 	if err != nil {
 		log.Println("err: ", err)
 	}
@@ -356,7 +356,7 @@ func DataSign(postData map[string]interface{}) string {
 	sort.Sort(sort.StringSlice(keys))
 	sign_str := ""
 	for _, key := range keys {
-		sign_str += fmt.Sprintf("%s=%s", key, postData[key])
+		sign_str += fmt.Sprintf("%s=%s", key, Strval(postData[key]))
 	}
 	sign_str += "tiebaclient!!!"
 	MD5 := md5.New()
