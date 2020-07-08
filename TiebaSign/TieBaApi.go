@@ -275,7 +275,8 @@ func Commitprison(bduss string, tbs string, userName string, tbName string, days
 	var postData = map[string]interface{}{
 		"BDUSS":           bduss,
 		"_client_type":    2,
-		"_client_version": days,
+		"_client_version": "11.2.8.1",
+		"day":             days,
 		"fid":             GetFid(tbName),
 		"ntn":             "banid",
 		"reason":          reason,
