@@ -292,7 +292,7 @@ func Commitprison(bduss string, tbs string, userName string, tbName string, days
 		postData["un"] = userName
 	}
 	postData["sign"] = DataSign(postData)
-	body, err := Fetch("http://c.tieba.baidu.com/c/c/bawu/commitprison", postData, "", "")
+	body, err := Fetch("http://c.tieba.baidu.com/c/c/bawu/commitprison", postData, bduss, "")
 	if err != nil {
 		log.Println("err: ", err)
 	}
