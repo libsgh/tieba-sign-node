@@ -34,6 +34,20 @@ func InitJobs() {
 			if err := jsoniter.Unmarshal(val, &tiebas); err != nil {
 				log.Println("error: ", err)
 			}
+			/*for _, p := range tiebas{
+				//1. 同步签到状态
+				Get("https://toolsbox.herokuapp.com/sign/syncStatus?uid=" + p.Uid)
+				isLogin := CheckBdussValid(p.Bduss)
+				if !isLogin {
+					postData := make(map[string]interface{})
+					postData["cookie_valid"] = 0
+					postData["sign_status"] = 2
+					Post("https://toolsbox.herokuapp.com/sign/update?flag=1&uid="+p.Uid, postData)
+					log.Println(p.Name + "------BDUSS失效")
+				}else{
+					OneBtnToSign(p)
+				}
+			}*/
 			Parallelize(5, len(tiebas), func(piece int) {
 				//1. 同步签到状态
 				Get("https://toolsbox.herokuapp.com/sign/syncStatus?uid=" + tiebas[piece].Uid)
@@ -44,8 +58,9 @@ func InitJobs() {
 					postData["sign_status"] = 2
 					Post("https://toolsbox.herokuapp.com/sign/update?flag=1&uid="+tiebas[piece].Uid, postData)
 					log.Println(tiebas[piece].Name + "------BDUSS失效")
+				} else {
+					OneBtnToSign(tiebas[piece])
 				}
-				OneBtnToSign(tiebas[piece])
 			})
 			log.Println("签到任务执行完毕")
 			signFlag = false

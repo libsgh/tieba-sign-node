@@ -151,7 +151,7 @@ func GetLikedTiebas(bduss string, uid string) ([]LikedTieba, error) {
 		}
 		var likedApiRep LikedApiRep
 		if err := jsoniter.Unmarshal([]byte(body), &likedApiRep); err != nil {
-			log.Println("err: ", err)
+			log.Println("贴吧关注: 0", body)
 			break
 		} else {
 			for _, likeTb := range likedApiRep.ForumList.Gconforum {
