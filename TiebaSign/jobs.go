@@ -215,7 +215,7 @@ func OneBtnToSign(tieba Tieba) {
 		Post("https://toolsbox.herokuapp.com/sign/update?flag=1&uid="+tieba.Uid, signData)
 	} else if totalCount != 0 && totalCount == validInfoCount {
 		//BDUSS失效
-		signData["cookie_valid"] = 2
+		signData["cookie_valid"] = -1
 		Post("https://toolsbox.herokuapp.com/sign/update?flag=1&uid="+tieba.Uid, signData)
 	} else {
 		infoJson := GetUserProfile(tieba.Uid)
