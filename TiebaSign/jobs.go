@@ -166,6 +166,7 @@ func OneBtnToSign(tieba Tieba) {
 	SqliteDb.Where("uid = ?", tieba.Uid).Delete(ChanSignResult{})
 	totalCount := len(likedTiebaList)
 	cookieValidCount := 0
+	validInfoCount := 0
 	excepCount := 0
 	blackCount := 0
 	signCount := 0
@@ -200,6 +201,9 @@ func OneBtnToSign(tieba Tieba) {
 			postData["error_code"] = ch.ErrorCode
 			postData["error_msg"] = ch.ErrorMsg
 			go Post("https://toolsbox.herokuapp.com/sign/bq/insert", postData)
+		} else if ch.ErrorCode == "1990055" {
+			//帐号未实名，功能禁用。请先完成帐号的手机实名验证
+			validInfoCount++
 		}
 	}
 	signData := make(map[string]interface{})
@@ -208,6 +212,10 @@ func OneBtnToSign(tieba Tieba) {
 	if (totalCount != 0 && totalCount == cookieValidCount) || (totalCount == 0 && !CheckBdussValid(tieba.Bduss)) {
 		//BDUSS失效
 		signData["cookie_valid"] = 0
+		Post("https://toolsbox.herokuapp.com/sign/update?flag=1&uid="+tieba.Uid, signData)
+	} else if totalCount != 0 && totalCount == validInfoCount {
+		//BDUSS失效
+		signData["cookie_valid"] = 2
 		Post("https://toolsbox.herokuapp.com/sign/update?flag=1&uid="+tieba.Uid, signData)
 	} else {
 		infoJson := GetUserProfile(tieba.Uid)
