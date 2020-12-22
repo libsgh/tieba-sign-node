@@ -123,8 +123,10 @@ func InitJobs() {
 				if pJsonResult.Get("error_code").ToString() == "0" {
 					log.Println(strconv.Itoa(pc) + "\t" + p.Uname + "\t封禁成功\t" + pResult)
 					profile := GetUserProfile(p.Uid)
-					headUrl := "https://himg.baidu.com/sys/portrait/item/" +
-						jsoniter.Get([]byte(profile), "user").Get("portrait").ToString()
+					headUrl := "https://ss0.bdstatic.com/7Ls0a8Sm1A5BphGlnYG/sys/portrait/item/" +
+						jsoniter.Get([]byte(profile), "user").Get("portrait").ToString() + "&ie=utf-8&fr=frs"
+					//headUrl := "https://himg.baidu.com/sys/portrait/item/" +
+					//	jsoniter.Get([]byte(profile), "user").Get("portrait").ToString()
 					nameShow := jsoniter.Get([]byte(profile), "user").Get("name_show").ToString()
 					Post("https://toolsbox.herokuapp.com/prision/update", map[string]interface{}{
 						"prision_time": pJsonResult.Get("time").ToInt() * 1000,
