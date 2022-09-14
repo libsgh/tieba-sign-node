@@ -33,7 +33,7 @@ func init() {
 	if err != nil {
 		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
 	} else {
-		fmt.Println("Sqlite数据库连接成功")
+		fmt.Println("数据库连接成功")
 	}
 	data, err := ioutil.ReadFile("postgres_init.sql")
 	if err != nil {
