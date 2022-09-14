@@ -16,6 +16,7 @@ var Db *gorm.DB
 func init() {
 	var err error
 	dialector := postgres.Open("port=5432 host=localhost user=xx password=xxxa dbname=xxx")
+	fmt.Println("DATABASE_URL: " + os.Getenv("DATABASE_URL"))
 	if os.Getenv("DATABASE_URL") != "" {
 		db, _ := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 		dialector = postgres.New(postgres.Config{
