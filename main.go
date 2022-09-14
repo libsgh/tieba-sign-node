@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -15,7 +14,8 @@ func main() {
 	//gin.SetMode(gin.ReleaseMode)
 	port := os.Getenv("PORT")
 	if port == "" {
-		log.Fatal("必须设置 $PORT")
+		//log.Fatal("必须设置 $PORT")
+		port = "8080"
 	}
 	//首先先生成一个gin实例
 	r := gin.New()

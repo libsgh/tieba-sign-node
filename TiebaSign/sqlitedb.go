@@ -12,7 +12,7 @@ var SqliteDb *gorm.DB
 func init() {
 	var err error
 	//Db, err = gorm.Open("postgres", "port=5432 host=ec2-54-235-193-0.compute-1.amazonaws.com user=uorhkrqhdtctcq password=356bb77282e543f42fb06e1859a9e0ad639feb1d83a4aa0abfc4c589b3e80b2e dbname=dcqt89gh79quvf")
-	SqliteDb, err = gorm.Open("sqlite3", "sign-node.db")
+	SqliteDb, err = gorm.Open("sqlite3", "/mnt/data/sign-node.db")
 	if err != nil {
 		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
 	} else {
