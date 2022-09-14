@@ -18,7 +18,7 @@ func init() {
 	var err error
 	dialector := postgres.Open("port=5432 host=localhost user=xx password=xxxa dbname=xxx")
 	if os.Getenv("DATABASE_URL") != "" {
-		db, _ := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+		db, _ := sql.Open("postgres", os.Getenv("DATABASE_URL")+"?sslmode=disable")
 		dialector = postgres.New(postgres.Config{
 			Conn: db,
 		})
