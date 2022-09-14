@@ -61,7 +61,7 @@ func info(c *gin.Context) {
 		"signed_user":      79,
 		"signed_execption": 491,
 	})*/
-	c.String(http.StatusOK, TiebaSign.Get("https://toolsbox.herokuapp.com/signnode/info?servername="+serverName+"&version="+version))
+	c.String(http.StatusOK, TiebaSign.Get("https://noki.top/signnode/info?servername="+serverName+"&version="+version))
 }
 
 //查询签到从详情
