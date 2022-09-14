@@ -20,10 +20,12 @@ func init() {
 	fmt.Println("DATABASE_URL: " + os.Getenv("DATABASE_URL"))
 	if os.Getenv("DATABASE_URL") != "" {
 		db, _ := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+		fmt.Println(db)
 		dialector = postgres.New(postgres.Config{
 			Conn: db,
 		})
 	}
+	fmt.Println(dialector)
 	Db, err = gorm.Open(dialector, &gorm.Config{
 		Logger: gorm_logrus.New(),
 		NamingStrategy: schema.NamingStrategy{
