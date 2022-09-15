@@ -65,12 +65,22 @@ func SignDetailInfo(uid string, fName string, currPage, pageSize, status int) ma
 	if status == 1 {
 		con = " and error_code!='0' and  error_code!='160002' and error_code is not null"
 	}
-	if len(fName) > 0 {
-		Db.Model(&ChanSignResult{}).Where("uid = ? and fname like ?"+con, uid, "%"+fName+"%").Count(&totalCount)
-		Db.Raw("select *, round(CAST(cur_score as numeric)/CAST(levelup_score as numeric),2) AS level from tieba where uid=? and fname like ?"+con+" limit ?,?", uid, "%"+fName+"%", start, pageSize).Find(&list)
+	if os.Getenv("DB_TYPE") == "postgres" {
+		if len(fName) > 0 {
+			Db.Model(&ChanSignResult{}).Where("uid = ? and fname like ?"+con, uid, "%"+fName+"%").Count(&totalCount)
+			Db.Raw("select *, round(CAST(cur_score as numeric)/CAST(levelup_score as numeric),2) AS level from tieba where uid=? and fname like ?"+con+" limit ?,?", uid, "%"+fName+"%", start, pageSize).Find(&list)
+		} else {
+			Db.Model(&ChanSignResult{}).Where("uid = ?"+con, uid).Count(&totalCount)
+			Db.Raw("select *, round(CAST(cur_score as numeric)/CAST(levelup_score as numeric),2) AS level from tieba where uid=? "+con+" limit ?,?", uid, start, pageSize).Find(&list)
+		}
 	} else {
-		Db.Model(&ChanSignResult{}).Where("uid = ?"+con, uid).Count(&totalCount)
-		Db.Raw("select *, round(CAST(cur_score as numeric)/CAST(levelup_score as numeric),2) AS level from tieba where uid=? "+con+" limit ?,?", uid, start, pageSize).Find(&list)
+		if len(fName) > 0 {
+			SqliteDb.Model(&ChanSignResult{}).Where("uid = ? and fname like ?"+con, uid, "%"+fName+"%").Count(&totalCount)
+			SqliteDb.Raw("select *, (CAST(cur_score as FLOAT)/CAST(levelup_score as FLOAT)) AS level from tieba where uid=? and fname like ?"+con+" limit ?,?", uid, "%"+fName+"%", start, pageSize).Find(&list)
+		} else {
+			SqliteDb.Model(&ChanSignResult{}).Where("uid = ?"+con, uid).Count(&totalCount)
+			SqliteDb.Raw("select *, (CAST(cur_score as FLOAT)/CAST(levelup_score as FLOAT)) AS level from tieba where uid=? "+con+" limit ?,?", uid, start, pageSize).Find(&list)
+		}
 	}
 	result["list"] = list
 	result["totalCount"] = totalCount

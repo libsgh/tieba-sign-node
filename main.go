@@ -8,7 +8,7 @@ import (
 	"tieba-sign-node/TiebaSign"
 )
 
-var version string = "1.3.2"
+var version string = "1.3.3"
 
 func main() {
 	//gin.SetMode(gin.ReleaseMode)
