@@ -75,11 +75,11 @@ func SignDetailInfo(uid string, fName string, currPage, pageSize, status int) ma
 		}
 	} else {
 		if len(fName) > 0 {
-			SqliteDb.Model(&ChanSignResult{}).Where("uid = ? and fname like ?"+con, uid, "%"+fName+"%").Count(&totalCount)
-			SqliteDb.Raw("select *, (CAST(cur_score as FLOAT)/CAST(levelup_score as FLOAT)) AS level from tieba where uid=? and fname like ?"+con+" limit ?,?", uid, "%"+fName+"%", start, pageSize).Find(&list)
+			Db.Model(&ChanSignResult{}).Where("uid = ? and fname like ?"+con, uid, "%"+fName+"%").Count(&totalCount)
+			Db.Raw("select *, (CAST(cur_score as FLOAT)/CAST(levelup_score as FLOAT)) AS level from tieba where uid=? and fname like ?"+con+" limit ?,?", uid, "%"+fName+"%", start, pageSize).Find(&list)
 		} else {
-			SqliteDb.Model(&ChanSignResult{}).Where("uid = ?"+con, uid).Count(&totalCount)
-			SqliteDb.Raw("select *, (CAST(cur_score as FLOAT)/CAST(levelup_score as FLOAT)) AS level from tieba where uid=? "+con+" limit ?,?", uid, start, pageSize).Find(&list)
+			Db.Model(&ChanSignResult{}).Where("uid = ?"+con, uid).Count(&totalCount)
+			Db.Raw("select *, (CAST(cur_score as FLOAT)/CAST(levelup_score as FLOAT)) AS level from tieba where uid=? "+con+" limit ?,?", uid, start, pageSize).Find(&list)
 		}
 	}
 	result["list"] = list
