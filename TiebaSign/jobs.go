@@ -19,9 +19,9 @@ var bqFlag bool = false
 var prisionFlag bool = false
 
 func InitJobs() {
-	serverName := os.Getenv("FLY_APP_NAME")
+	serverName := os.Getenv("NODE_NAME")
 	if serverName == "" {
-		log.Fatal("必须设置 $FLY_APP_NAME")
+		log.Fatal("必须设置 $NODE_NAME")
 	}
 	c := cron.New()
 	c.AddFunc("0 0/1 * * * ?", func() {

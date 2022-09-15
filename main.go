@@ -17,7 +17,6 @@ func main() {
 		//log.Fatal("必须设置 $PORT")
 		port = "8080"
 	}
-	port = "8080"
 	//首先先生成一个gin实例
 	r := gin.New()
 	r.Use(gin.Logger())
