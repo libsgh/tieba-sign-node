@@ -6,6 +6,7 @@ import (
 	_ "github.com/lib/pq"
 	gorm_logrus "github.com/onrik/gorm-logrus"
 	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"io/ioutil"
@@ -16,26 +17,35 @@ var Db *gorm.DB
 
 func init() {
 	var err error
-	dialector := postgres.Open("port=5432 host=localhost user=xx password=xxxa dbname=xxx")
-	if os.Getenv("DATABASE_URL") != "" {
-		db, _ := sql.Open("postgres", os.Getenv("DATABASE_URL")+"?sslmode=disable")
-		dialector = postgres.New(postgres.Config{
-			Conn: db,
+	if os.Getenv("DB_TYPE") == "postgres" {
+		dialector := postgres.Open("port=5432 host=localhost user=xx password=xxxa dbname=xxx")
+		if os.Getenv("DATABASE_URL") != "" {
+			db, _ := sql.Open("postgres", os.Getenv("DATABASE_URL")+"?sslmode=disable")
+			dialector = postgres.New(postgres.Config{
+				Conn: db,
+			})
+		}
+		Db, err = gorm.Open(dialector, &gorm.Config{
+			Logger: gorm_logrus.New(),
+			NamingStrategy: schema.NamingStrategy{
+				SingularTable: true,
+			},
 		})
+	} else {
+		Db, err = gorm.Open(sqlite.Open("sign-node.db"), &gorm.Config{
+			Logger: gorm_logrus.New(),
+			NamingStrategy: schema.NamingStrategy{
+				SingularTable: true,
+			},
+		})
+		//Db, err = gorm.Open("sqlite3", "sign-node.db")
 	}
-	Db, err = gorm.Open(dialector, &gorm.Config{
-		Logger: gorm_logrus.New(),
-		NamingStrategy: schema.NamingStrategy{
-			SingularTable: true,
-		},
-	})
-	//SqliteDb, err = gorm.Open("sqlite3", "/mnt/data/sign-node.db")
 	if err != nil {
 		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
 	} else {
 		fmt.Println("数据库连接成功")
 	}
-	data, err := ioutil.ReadFile("postgres_init.sql")
+	data, err := ioutil.ReadFile(os.Getenv("DB_TYPE") + "_init.sql")
 	if err != nil {
 		fmt.Println("read file err:", err.Error())
 		return
