@@ -23,9 +23,12 @@ import (
 //http get方法
 func Get(url string) string {
 	res, _ := http.Get(url)
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-	return string(body)
+	if res != nil && res.Body != nil {
+		defer res.Body.Close()
+		body, _ := ioutil.ReadAll(res.Body)
+		return string(body)
+	}
+	return ""
 }
 
 func Post(url string, postData map[string]interface{}) string {
