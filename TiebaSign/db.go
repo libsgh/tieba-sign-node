@@ -51,8 +51,8 @@ func init() {
 		return
 	}
 	//打印sql语句
-	//SqliteDb.LogMode(true)
-	//初始化sqlite数据库
+	//Db.LogMode(true)
+	//初始化数据库
 	Db.Exec(string(data))
 }
 

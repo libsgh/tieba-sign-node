@@ -8,7 +8,7 @@ import (
 	"tieba-sign-node/TiebaSign"
 )
 
-var version string = "1.3.3"
+var version string = "1.3.4"
 
 func main() {
 	//gin.SetMode(gin.ReleaseMode)
@@ -44,7 +44,7 @@ func index(c *gin.Context) {
 返回程序信息
 */
 func info(c *gin.Context) {
-	serverName := os.Getenv("SERVER_NAME")
+	serverName := os.Getenv("NODE_NAME")
 	//currentTime := time.Now()
 	/*c.JSON(http.StatusOK, gin.H{
 		"tb_count":         36630,
