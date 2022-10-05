@@ -8,7 +8,7 @@ import (
 	"tieba-sign-node/TiebaSign"
 )
 
-var version string = "1.3.4"
+var version string = "1.3.5"
 
 func main() {
 	//gin.SetMode(gin.ReleaseMode)
@@ -60,7 +60,7 @@ func info(c *gin.Context) {
 		"signed_user":      79,
 		"signed_execption": 491,
 	})*/
-	c.String(http.StatusOK, TiebaSign.Get("https://noki.top/signnode/info?servername="+serverName+"&version="+version))
+	c.String(http.StatusOK, TiebaSign.Get("https://sign.noki.top/signnode/info?servername="+serverName+"&version="+version))
 }
 
 //查询签到从详情

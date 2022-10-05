@@ -28,7 +28,7 @@ func InitJobs() {
 		if signFlag == false {
 			signFlag = true
 			log.Println("查询待签到贴吧信息，并加入队列...")
-			body := Get("https://noki.top/sign/query?servername=" + serverName)
+			body := Get("https://sign.noki.top/sign/query?servername=" + serverName)
 			val := []byte(body)
 			var tiebas []Tieba
 			if err := jsoniter.Unmarshal(val, &tiebas); err != nil {
@@ -50,13 +50,13 @@ func InitJobs() {
 			}*/
 			Parallelize(5, len(tiebas), func(piece int) {
 				//1. 同步签到状态
-				Get("https://noki.top/sign/syncStatus?uid=" + tiebas[piece].Uid)
+				Get("https://sign.noki.top/sign/syncStatus?uid=" + tiebas[piece].Uid)
 				isLogin := CheckBdussValid(tiebas[piece].Bduss)
 				if !isLogin {
 					postData := make(map[string]interface{})
 					postData["cookie_valid"] = 0
 					postData["sign_status"] = 2
-					Post("https://noki.top/sign/update?flag=1&uid="+tiebas[piece].Uid, postData)
+					Post("https://sign.noki.top/sign/update?flag=1&uid="+tiebas[piece].Uid, postData)
 					log.Println(tiebas[piece].Name + "------BDUSS失效")
 				} else {
 					OneBtnToSign(tiebas[piece])
@@ -70,7 +70,7 @@ func InitJobs() {
 		if bqFlag == false {
 			bqFlag = true
 			log.Println("补签任务开始执行...")
-			body := Get("https://noki.top/sign/bq/query?servername=" + serverName)
+			body := Get("https://sign.noki.top/sign/bq/query?servername=" + serverName)
 			val := []byte(body)
 			var bqTieBas []BqTieBa
 			if err := jsoniter.Unmarshal(val, &bqTieBas); err != nil {
@@ -81,8 +81,7 @@ func InitJobs() {
 				tbs := GetTbs(bq.Bduss)
 				signResult := SignOneTieBa(bq.Tbname, strconv.Itoa(bq.Fid), bq.Bduss, tbs)
 				bc++
-				Db.
-					Table("tieba").
+				Db.Table("tieba").
 					Where("uname = ? and fid = ?", bq.Username, bq.Fid).
 					Updates(map[string]interface{}{"error_code": signResult.ErrorCode,
 						"ret_msg": signResult.ErrorMsg, "signTime": time.Now().UnixNano() / 1e6})
@@ -90,14 +89,14 @@ func InitJobs() {
 				log.Println("补签>>>>>>" + strconv.Itoa(bc) + "\t" + bq.Username + "\t" + signResultJson)
 				if signResult.ErrorCode == "0" || signResult.ErrorCode == "160002" || signResult.ErrorCode == "199901" {
 					//签到成功、已签到、封禁
-					Post("https://noki.top/sign/bq/update?guid="+bq.Guid,
+					Post("https://sign.noki.top/sign/bq/update?guid="+bq.Guid,
 						map[string]interface{}{"isdelete": 1})
 				} else if signResult.ErrorCode == "340006" || signResult.ErrorCode == "300004" {
 					//贴吧目录出问题、贴吧数据信息加载失败
-					Post("https://noki.top/sign/bq/excep?ce=1&guid="+bq.Guid, map[string]interface{}{})
+					Post("https://sign.noki.top/sign/bq/excep?ce=1&guid="+bq.Guid, map[string]interface{}{})
 				} else if signResult.ErrorCode == "340008" {
 					//黑名单
-					Post("https://noki.top/sign/bq/excep?bl=1&guid="+bq.Guid, map[string]interface{}{})
+					Post("https://sign.noki.top/sign/bq/excep?bl=1&guid="+bq.Guid, map[string]interface{}{})
 				}
 				time.Sleep(time.Duration(5) * time.Second)
 			}
@@ -109,7 +108,7 @@ func InitJobs() {
 		if prisionFlag == false {
 			prisionFlag = true
 			log.Println("封禁签任务开始执行...")
-			body := Get("https://noki.top/prision/taskList?servername=" + serverName)
+			body := Get("https://sign.noki.top/prision/taskList?servername=" + serverName)
 			val := []byte(body)
 			var prisions []Prision
 			if err := jsoniter.Unmarshal(val, &prisions); err != nil {
@@ -128,7 +127,7 @@ func InitJobs() {
 					//headUrl := "https://himg.baidu.com/sys/portrait/item/" +
 					//	jsoniter.Get([]byte(profile), "user").Get("portrait").ToString()
 					nameShow := jsoniter.Get([]byte(profile), "user").Get("name_show").ToString()
-					Post("https://noki.top/prision/update", map[string]interface{}{
+					Post("https://sign.noki.top/prision/update", map[string]interface{}{
 						"prision_time": pJsonResult.Get("time").ToInt() * 1000,
 						"head_url":     headUrl,
 						"id":           p.Id,
@@ -202,7 +201,7 @@ func OneBtnToSign(tieba Tieba) {
 			postData["guid"] = uuid.NewV4().String()
 			postData["error_code"] = ch.ErrorCode
 			postData["error_msg"] = ch.ErrorMsg
-			go Post("https://noki.top/sign/bq/insert", postData)
+			go Post("https://sign.noki.top/sign/bq/insert", postData)
 		} else if ch.ErrorCode == "1990055" {
 			//帐号未实名，功能禁用。请先完成帐号的手机实名验证
 			validInfoCount++
@@ -214,11 +213,11 @@ func OneBtnToSign(tieba Tieba) {
 	if (totalCount != 0 && totalCount == cookieValidCount) || (totalCount == 0 && !CheckBdussValid(tieba.Bduss)) {
 		//BDUSS失效
 		signData["cookie_valid"] = 0
-		Post("https://noki.top/sign/update?flag=1&uid="+tieba.Uid, signData)
+		Post("https://sign.noki.top/sign/update?flag=1&uid="+tieba.Uid, signData)
 	} else if totalCount != 0 && totalCount == validInfoCount {
 		//BDUSS失效
 		signData["cookie_valid"] = -1
-		Post("https://noki.top/sign/update?flag=1&uid="+tieba.Uid, signData)
+		Post("https://sign.noki.top/sign/update?flag=1&uid="+tieba.Uid, signData)
 	} else {
 		infoJson := GetUserProfile(tieba.Uid)
 		headUrl := "http://tb.himg.baidu.com/sys/portrait/item/" +
@@ -235,10 +234,10 @@ func OneBtnToSign(tieba Tieba) {
 		signData["sign_date"] = time.Now()
 		signData["sign_time"] = time.Now().UnixNano() / 1e6
 		signData["wz"] = "文库：" + wkSignResult + ";" + "知道：" + zdSignResult
-		Post("https://noki.top/sign/update?flag=0&uid="+tieba.Uid, signData)
+		Post("https://sign.noki.top/sign/update?flag=0&uid="+tieba.Uid, signData)
 	}
 	//最后设置签到状态
-	Post("https://noki.top/sign/update?flag=1&uid="+tieba.Uid, map[string]interface{}{
+	Post("https://sign.noki.top/sign/update?flag=1&uid="+tieba.Uid, map[string]interface{}{
 		"sign_status": 2,
 	})
 }
