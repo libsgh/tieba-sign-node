@@ -20,7 +20,7 @@ import (
 	"unsafe"
 )
 
-//http get方法
+// http get方法
 func Get(url string) string {
 	res, _ := http.Get(url)
 	if res != nil && res.Body != nil {
@@ -62,7 +62,7 @@ func Post(url string, postData map[string]interface{}) string {
 	return *str
 }
 
-//公共贴吧请求（带cookie）
+// 公共贴吧请求（带cookie）
 func Fetch(url string, postData map[string]interface{}, bduss string, stoken string) (string, error) {
 	return FetchWithHeaders(url, postData, bduss, stoken, nil)
 }
@@ -106,7 +106,7 @@ func FetchWithHeaders(url string, postData map[string]interface{}, bduss string,
 	return string(body), nil
 }
 
-//获取tbs
+// 获取tbs
 func GetTbs(bduss string) string {
 	body, err := Fetch("http://tieba.baidu.com/dc/common/tbs", nil, bduss, "")
 	if err != nil {
@@ -119,7 +119,7 @@ func GetTbs(bduss string) string {
 	return ""
 }
 
-//BDUSS有效性检测
+// BDUSS有效性检测
 func CheckBdussValid(bduss string) bool {
 	body, err := Fetch("http://tieba.baidu.com/dc/common/tbs", nil, bduss, "")
 	if err != nil {
@@ -132,7 +132,7 @@ func CheckBdussValid(bduss string) bool {
 	return false
 }
 
-//获取用户关注的所有贴吧
+// 获取用户关注的所有贴吧
 func GetLikedTiebas(bduss string, uid string) ([]LikedTieba, error) {
 	pn := 0
 	if uid == "" {
@@ -171,7 +171,7 @@ func GetLikedTiebas(bduss string, uid string) ([]LikedTieba, error) {
 	return likedTiebaList, nil
 }
 
-//签到一个贴吧
+// 签到一个贴吧
 func SignOneTieBa(tbName string, fid string, bduss string, tbs string) SignResult {
 	start := time.Now().UnixNano() / 1e6
 	var postData = map[string]interface{}{
@@ -213,7 +213,7 @@ func SignOneTieBa(tbName string, fid string, bduss string, tbs string) SignResul
 	return signResult
 }
 
-//文库签到
+// 文库签到
 func WenKuSign(bduss string) string {
 	headers := make(map[string]string)
 	headers["Host"] = "wenku.baidu.com"
@@ -230,7 +230,7 @@ func WenKuSign(bduss string) string {
 	return "未签到"
 }
 
-//文库签到
+// 文库签到
 func ZhiDaoSign(bduss string) string {
 	stokenBody, err1 := FetchWithHeaders("https://zhidao.baidu.com", nil, bduss, "", map[string]string{"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4184.0 Safari/537.36"})
 	if err1 != nil {
@@ -256,7 +256,7 @@ func ZhiDaoSign(bduss string) string {
 	return "未签到"
 }
 
-//获取用户基本信息
+// 获取用户基本信息
 func GetUserProfile(uid string) string {
 	var postData = map[string]interface{}{
 		"_client_version": "6.1.2",
@@ -272,7 +272,7 @@ func GetUserProfile(uid string) string {
 	return body
 }
 
-//封禁
+// 封禁
 func Commitprison(bduss string, tbs string, userName string, tbName string, days int, reason string,
 	portrait string) string {
 	var postData = map[string]interface{}{
@@ -303,7 +303,7 @@ func Commitprison(bduss string, tbs string, userName string, tbName string, days
 	return body
 }
 
-//根据贴吧名称获取fid
+// 根据贴吧名称获取fid
 func GetFid(tbName string) string {
 	fid := ""
 	body := Get("http://tieba.baidu.com/f/commit/share/fnameShareApi?ie=utf-8&fname=" + tbName)
@@ -314,10 +314,10 @@ func GetFid(tbName string) string {
 	return fid
 }
 
-//贴吧未开放此功能
-//名人堂助攻： 已助攻{"no":2280006,"error":"","data":[]}
-//名人堂助攻： 助攻成功{"no":0,"error":"","data":[...]}
-//未关注此吧{"no":3110004,"error":"","data":[]}
+// 贴吧未开放此功能
+// 名人堂助攻： 已助攻{"no":2280006,"error":"","data":[]}
+// 名人堂助攻： 助攻成功{"no":0,"error":"","data":[...]}
+// 未关注此吧{"no":3110004,"error":"","data":[]}
 func CelebritySupport(bduss string, tbName string, fid string, tbs string) string {
 	if fid == "" && tbName == "" {
 		log.Fatal("至少包含贴吧名字、FID中的一个")
@@ -350,7 +350,7 @@ func CelebritySupport(bduss string, tbName string, fid string, tbs string) strin
 	return "该贴吧未开放此功能"
 }
 
-//贴吧参数sing MD5签名
+// 贴吧参数sing MD5签名
 func DataSign(postData map[string]interface{}) string {
 	var keys []string
 	for key, _ := range postData {
@@ -370,7 +370,7 @@ func DataSign(postData map[string]interface{}) string {
 	return strings.ToUpper(string(signValue))
 }
 
-//k8中的多线程，控制并发数
+// k8中的多线程，控制并发数
 type DoWorkPieceFunc func(piece int)
 
 // Parallelize is a very simple framework that allow for parallelizing
