@@ -27,7 +27,7 @@ func InitJobs() {
 		if signFlag == false {
 			signFlag = true
 			log.Println("查询待签到贴吧信息，并加入队列...")
-			body := Get(MainServer + "/sign/query?servername=" + serverName)
+			body := Get(MainServer + "/sign/query?pageNo=100&servername=" + serverName)
 			val := []byte(body)
 			var tiebas []Tieba
 			if err := jsoniter.Unmarshal(val, &tiebas); err != nil {
