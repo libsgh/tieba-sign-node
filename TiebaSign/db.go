@@ -17,7 +17,7 @@ var Db *gorm.DB
 
 func init() {
 	var err error
-	if os.Getenv("DB_TYPE") == "postgres" {
+	if DB_TYPE == "postgres" {
 		dialector := postgres.Open("port=5432 host=localhost user=xx password=xxxa dbname=xxx")
 		if os.Getenv("DATABASE_URL") != "" {
 			db, _ := sql.Open("postgres", os.Getenv("DATABASE_URL")+"?sslmode=disable")
@@ -45,7 +45,7 @@ func init() {
 	} else {
 		fmt.Println("数据库连接成功")
 	}
-	data, err := ioutil.ReadFile(os.Getenv("DB_TYPE") + "_init.sql")
+	data, err := ioutil.ReadFile(DB_TYPE + "_init.sql")
 	if err != nil {
 		fmt.Println("read file err:", err.Error())
 		return
@@ -65,7 +65,7 @@ func SignDetailInfo(uid string, fName string, currPage, pageSize, status int) ma
 	if status == 1 {
 		con = " and error_code!='0' and  error_code!='160002' and error_code is not null"
 	}
-	if os.Getenv("DB_TYPE") == "postgres" {
+	if DB_TYPE == "postgres" {
 		if len(fName) > 0 {
 			Db.Model(&ChanSignResult{}).Where("uid = ? and fname like ?"+con, uid, "%"+fName+"%").Count(&totalCount)
 			Db.Raw("select *, round(CAST(cur_score as numeric)/CAST(levelup_score as numeric),2) AS level from tieba where uid=? and fname like ?"+con+" limit ?,?", uid, "%"+fName+"%", start, pageSize).Find(&list)
@@ -90,7 +90,7 @@ func SignDetailInfo(uid string, fName string, currPage, pageSize, status int) ma
 	return result
 }
 
-//获取查询游标start
+// 获取查询游标start
 func GetPageStart(pageNo, pageSize int) int {
 	if pageNo < 1 {
 		pageNo = 1
@@ -101,7 +101,7 @@ func GetPageStart(pageNo, pageSize int) int {
 	return (pageNo - 1) * pageSize
 }
 
-//获取总页数
+// 获取总页数
 func GetTotalPage(totalCount int, pageSize int) int {
 	if pageSize == 0 {
 		return 0

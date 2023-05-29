@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"os"
 	"strconv"
 	"tieba-sign-node/TiebaSign"
 )
@@ -12,10 +11,10 @@ var version string = "1.3.5"
 
 func main() {
 	//gin.SetMode(gin.ReleaseMode)
-	port := os.Getenv("PORT")
+	port := TiebaSign.PORT
 	if port == "" {
 		//log.Fatal("必须设置 $PORT")
-		port = "8080"
+		port = "8088"
 	}
 	//首先先生成一个gin实例
 	r := gin.New()
@@ -33,18 +32,20 @@ func main() {
 
 }
 
-/**
+/*
+*
 首页
 */
 func index(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", gin.H{"name": "Libs"})
 }
 
-/**
+/*
+*
 返回程序信息
 */
 func info(c *gin.Context) {
-	serverName := os.Getenv("NODE_NAME")
+	serverName := TiebaSign.NODE_NAME
 	//currentTime := time.Now()
 	/*c.JSON(http.StatusOK, gin.H{
 		"tb_count":         36630,
@@ -60,10 +61,10 @@ func info(c *gin.Context) {
 		"signed_user":      79,
 		"signed_execption": 491,
 	})*/
-	c.String(http.StatusOK, TiebaSign.Get("https://sign.noki.top/signnode/info?servername="+serverName+"&version="+version))
+	c.String(http.StatusOK, TiebaSign.Get(TiebaSign.MainServer+"/signnode/info?servername="+serverName+"&version="+version))
 }
 
-//查询签到从详情
+// 查询签到从详情
 func tbs(c *gin.Context) {
 	uid := c.Request.FormValue("uid")
 	fName := c.Request.FormValue("fname")

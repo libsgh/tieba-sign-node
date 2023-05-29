@@ -1,0 +1,31 @@
+FROM golang:1.18 as builder
+MAINTAINER yangshuhai<yangshuhai@pdnews.cn>
+
+WORKDIR /cache
+# 如果 go.mod 没有变化，就能复用之前镜像缓存，加快编译速度
+COPY go.mod .
+RUN go env -w GOPROXY=https://goproxy.cn
+RUN go mod tidy -compat=1.18
+
+WORKDIR /app
+COPY . .
+RUN go env -w GOPROXY=https://goproxy.cn
+RUN go mod tidy -compat=1.18
+RUN GOOS=linux go build -ldflags "-w -s" -o app
+
+# 可选，减少二进制包大小
+RUN if [ type upx >/dev/null 2>&1 ]; then upx app; fi
+
+FROM alpine:3.14
+
+MAINTAINER yangshuhai<yangshuhai@pdnews.cn>
+RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.14/main" > /etc/apk/repositories
+RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.14/community" >> /etc/apk/repositories
+RUN apk add --update curl bash net-tools libc6-compat ca-certificates && rm -rf /var/cache/apk/*
+
+WORKDIR /app
+
+COPY --from=builder /app/app main
+
+RUN chmod +x main
+CMD ["/app/main"]
