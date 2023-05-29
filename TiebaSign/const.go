@@ -2,7 +2,7 @@ package TiebaSign
 
 import "os"
 
-const MainServer string = "https://sign.noki.top"
+const MainServer string = "http://localhost:8081"
 
 var DB_TYPE string = getEnv("DB_TYPE", "sqlite")
 var PORT string = getEnv("PORT", "8088")
